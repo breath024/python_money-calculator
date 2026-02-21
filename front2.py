@@ -1,11 +1,14 @@
-import sys
+import sys, PyQt6 
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QLineEdit, QPlainTextEdit, QLabel
 )
 from PyQt6.QtCore import Qt
+from datetime import datetime
 
 class MainWindow(QMainWindow):
+    n2 = 0
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("입력 → 출력 기록 예제")
@@ -50,31 +53,61 @@ class MainWindow(QMainWindow):
         self.append_log("시스템: 입력을 기다리고 있습니다...")
 
     def process_input(self):
-        text = self.input_edit.text().strip()
-        if not text:
-            return  # 빈 입력 무시
-
-        # 1. 입력한 내용 출력창에 기록
-        self.append_log(f"> {text}")
-
-        # 2. 여기서 원하는 처리 (예시)
-        if text.lower() in ["안녕", "hello"]:
-            response = "안녕하세요! 반갑습니다 😄"
-        elif text.lower() == "시간":
-            from datetime import datetime
-            response = f"현재 시간: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        #공백 없애고 입력값 가져오기
+        self.text = self.input_edit.text().strip()
+        # 입력값이 "숫자/문자열" 형태인지 확인
+        if len(self.text) < 2:
+            response = "입력 형식이 올바르지 않습니다. '숫자/문자열' 형태로 2자 이상 입력해주세요."
+            self.append_log(f"velmora: {response}")
+            return 0
         else:
-            response = f"받은 메시지: {text} (처리됨)"
+            if self.text.count('/') != 1:
+                response = "입력 형식이 올바르지 않습니다. '숫자/문자열' 형태로 입력해주세요."
+                self.append_log(f"velmora: {response}")
+                return 0
+            else:
+                txt = self.text.split('/')
+                try:
+                    self.n = int(txt[0])
+                    self.t = txt[1]
+                    if self.t == None or self.t == "":
+                        self.t = "미입력"
+                except ValueError   :
+                    response = "숫자를 입력해주세요."
+                    self.append_log(f"velmora: {response}")
+                    return 0
+                
+                if self.text == None or self.text == "":
+                    response = "빈 입력은 처리할 수 없습니다."
+                    self.append_log(f"velmora: {response}")
+                    return 0
+                elif len(self.t) > 25:
+                    response = "문자열은 25자 이하로 입력해주세요."
+                    self.append_log(f"velmora: {response}")
+                    return 0
+                #n이 양수이고 t가 문자열이며 길이가 25자 이하이고 빈 문자열이 아니며 숫자가 포함되어 있지 않은 경우
+                elif self.n > 0 and isinstance(self.t, str) and not any(c.isdigit() for c in self.t) and len(self.t) <= 25 and self.t != "":
+                    self.n2 += self.n
+                    # 입력한 내용 출력창에 기록
+                    
+                    response= "처리완료."
+                    self.append_log(f"velmora: {self.n} {self.t} {self.n2} {self.text} {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {response}")
 
-        # 3. 응답도 출력창에 기록
-        self.append_log(f"  ↳ {response}")
+                    # 응답도 출력창에 기록
+                    self.append_log(f"velmora: {response}")
 
-        # 4. 입력창 지우기 (선택사항)
-        self.input_edit.clear()
-        # 또는 유지하고 싶으면 주석 처리
+                    # 입력창 지우기 (선택사항)
+                    self.input_edit.clear()
+                    # 또는 유지하고 싶으면 주석 처리
 
-        # 자동 스크롤
-        self.output.ensureCursorVisible()
+                    # 자동 스크롤
+                    self.output.ensureCursorVisible()
+                    return 0
+                else:
+                    response = "숫자/문자로 이루어진 올바른 입력이 아닙니다. 숫자는 양수여야 하고, 문자열은 25자 이하이며 숫자를 포함하지 않아야 합니다."
+                    self.append_log(f"velmora: n: {self.n} t:{self.t} n2: {self.n2} text: {self.text} {response}")
+                    return 0
+
 
     def append_log(self, message: str):
         self.output.appendPlainText(message)
