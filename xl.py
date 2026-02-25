@@ -1,30 +1,44 @@
 import openpyxl 
-from openpyxl import Workbook
-from openpyxl.styles import Font, Alignment, Border, Side   
-def create_excel_file(file_name):
-    # Create a new workbook and select the active sheet
-    workbook = Workbook()
-    sheet = workbook.active
+from openpyxl import Workbook, load_workbook
+from openpyxl.styles import Font, Alignment, Border, Side
+from datetime import datetime, timedelta
 
-    # Set the title of the sheet
-    sheet.title = "Data"
+# 엑셀 파일 경로
+path = "C:\\Users\\USER\\Desktop\\지출내역서\\입출금내역(봇용).xlsx"
+# 엑셀 파일 열기
 
-    # Define the header row
-    headers = ["ID", "Name", "Age", "City"]
-    sheet.append(headers)
+wl = load_workbook(path)
+wb = Workbook 
+dt = int(datetime.now().strftime('%m')) +1
+dlt = datetime.now() + timedelta(days=1)
+print("END")
+    # 다음날이 1일인 경우 A2 셀부터 다음달 1일까지 날짜 입력
+dlt += timedelta(days=4)
+i = 2
+print(dlt)
+while dlt.strftime('%d') != '01':
+    i += 1
+    dlt += timedelta(days=1)
+    print(dlt)
 
-    # Add some sample data
-    data = [
-        [1, "tom", 30, "New York"],
-        [2, "Bob", 25, "Los Angeles"],
-        [3, "Charlie", 35, "Chicago"],
-        [4, "David", 28, "Houston"]
-    ]
+def create_format(file_name):
+    # 엑셀 파일 열기
+    wl = load_workbook(file_name)
+    ws = wl.active 
+    # 다음날 날짜 계산
+    dlt = datetime.now() + timedelta(days=1)
+    # 다음날이 1일인 경우 A2 셀부터 다음달 1일까지 날짜 입력
+    if dlt.strftime('%d') == '01':
+        dlt += 1
+        ws['A2'] = datetime.now().strftime('%Y-%m-%d')
+        i = 2
+        while dlt.strftime('%d') != '01':
+            i += 1
+            ws[f"A{i}"] = dlt.strftime('%Y-%m-%d')
+            dlt += timedelta(days=1)
 
-    for row in data:
-        sheet.append(row)
 
-    # Save the workbook to a file
-    workbook.save(file_name)
-    
-if __name__ == "__main__":    create_excel_file("sample_data.xlsx")
+    # A1 셀에 현재 날짜와 시간 입력
+    ws['A1'] = dt
+    # 엑셀 파일 저장
+    wl.save(file_name)

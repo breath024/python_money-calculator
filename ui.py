@@ -125,7 +125,7 @@ class MainWindow(QMainWindow):
                    
                     # 입력한 내용 출력창에 기록
                     response = "처리완료."
-                    self.append_log(f"velmora: 지출금액: {self.n} {self.t} {self.n2} {self.text} {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {response}")
+                    self.append_log(f"velmora: 지출금액: {self.n} 지출처: {self.t} {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {response}")
 
                     # 응답도 출력창에 기록
                     self.append_log(f"velmora: {response}")
