@@ -1,4 +1,4 @@
-import sys, PyQt6 
+import sys, PyQt6, xl
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QLineEdit, QPlainTextEdit, QLabel, QComboBox
@@ -9,6 +9,7 @@ from datetime import datetime
 #UI 구성과 입력 처리 로직이 포함된 메인 윈도우 클래스
 class MainWindow(QMainWindow):
     n2 = 0
+    arg1 = "입금"
 
     def __init__(self):
         # QMainWindow 초기화
@@ -82,8 +83,10 @@ class MainWindow(QMainWindow):
         
     # 콤보박스 선택 변경 이벤트 처리
     def cmbchage(self, arg1):
-        print(arg1)
+        self.arg1 = arg1
+        print(self.arg1)
 
+    # 입력 처리 로직
     def process_input(self):
         #공백 없애고 입력값 가져오기
         self.text = self.input_edit.text().strip()
@@ -93,6 +96,20 @@ class MainWindow(QMainWindow):
             response = "입력 형식이 올바르지 않습니다. '숫자/문자열' 형태로 2자 이상 입력해주세요."
             self.append_log(f"velmora: {response}")
             return 0
+        elif self.text == "?":
+            response = "입력 형식: '숫자/문자열' (예: 10000/월급)\n'.' (오늘까지의 내역)"
+            self.append_log(f"velmora: {response}")
+
+        elif self.text==".":
+            response = "오늘 까지의 입출금 내역입니다."
+            ws = xl.wb[f"{datetime.now().month}월"]
+            CA = ws[f"B{int(datetime.now().strftime('%d'))+1}"].value
+            CAA = ws[f"D{int(datetime.now().strftime('%d'))+1}"].value
+            CM = ws[f"C{int(datetime.now().strftime('%d'))+1}"].value
+            CMM = ws[f"E{int(datetime.now().strftime('%d'))+1}"].value
+            RM = ws[f"F{int(datetime.now().strftime('%d'))+1}"].value
+            self.append_log(f"velmora: {response}")
+            self.append_log(f"velmora: 입금액: {CA}\n입금처: {CAA}\n출금액: {CM}\n출금처: {CMM}\n잔액: {RM}")
         else:
             if self.text.count('/') != 1:
                 response = "입력 형식이 올바르지 않습니다. '숫자/문자열' 형태로 입력해주세요."
@@ -118,17 +135,18 @@ class MainWindow(QMainWindow):
                     response = "문자열은 25자 이하로 입력해주세요."
                     self.append_log(f"velmora: {response}")
                     return 0
-                #n이 양수이고 t가 문자열이며 길이가 25자 이하이고 빈 문자열이 아니며 숫자가 포함되어 있지 않은 경우
-                elif self.n > 0 and isinstance(self.t, str) and not any(c.isdigit() for c in self.t) and len(self.t) <= 25 and self.t != "":
+                #n이 양수이고 t가 25자 이하의 문자열이며 빈 문자열이 아닐 때 처리
+                elif self.n > 0 and isinstance(self.t, str) and len(self.t) <= 25 and self.t != "":
                     #n2에 n을 더하기
                     self.n2 += self.n
-                   
+
+                    if self.arg1 == "입금":
+                        xl.add(self.n, self.t)
+                    
+
                     # 입력한 내용 출력창에 기록
                     response = "처리완료."
-                    self.append_log(f"velmora: 지출금액: {self.n} 지출처: {self.t} {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {response}")
-
-                    # 응답도 출력창에 기록
-                    self.append_log(f"velmora: {response}")
+                    self.append_log(f"velmora: {self.arg1}금액: {self.n} 출처: {self.t} {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {response}")
 
                     # 입력창 지우기 (선택사항)
                     self.input_edit.clear()
@@ -141,8 +159,8 @@ class MainWindow(QMainWindow):
                     response = "숫자/문자로 이루어진 올바른 입력이 아닙니다. 숫자는 양수여야 하고, 문자열은 25자 이하이며 숫자를 포함하지 않아야 합니다."
                     self.append_log(f"velmora: n: {self.n} t:{self.t} n2: {self.n2} text: {self.text} {response}")
                     return 0
-
-
+                
+                
     def append_log(self, message: str):
         self.output.appendPlainText(message)
 
@@ -151,6 +169,3 @@ def main():
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
-
-if __name__ == '__main__':
-    main()
