@@ -143,6 +143,8 @@ class MainWindow(QMainWindow):
                     if self.arg1 == "입금":
                         xl.add(self.n, self.t)
                     
+                    elif self.arg1 == "출금":
+                        xl.minus(self.n, self.t)
 
                     # 입력한 내용 출력창에 기록
                     response = "처리완료."

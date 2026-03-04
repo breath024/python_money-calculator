@@ -25,12 +25,12 @@ except FileNotFoundError:
         ws.append(headers)
        
         # 열 너비 조정
-        ws.column_dimensions['A'].width = 15
-        ws.column_dimensions['B'].width = 12
-        ws.column_dimensions['C'].width = 12
+        ws.column_dimensions['A'].width = 15 # 날짜
+        ws.column_dimensions['B'].width = 12 # 입금액
+        ws.column_dimensions['C'].width = 12 # 출금액 
         ws.column_dimensions['D'].width = 35 # 입금처
         ws.column_dimensions['E'].width = 35 # 출금처
-        ws.column_dimensions['F'].width = 15
+        ws.column_dimensions['F'].width = 15 # 잔액
       
         # 헤더 폰트 굵게
         for col in range(1, 7):
@@ -105,5 +105,17 @@ def add(C, R):
     ws[f"B{int(datetime.now().strftime('%d'))+1}"] = n
     ws[f"D{int(datetime.now().strftime('%d'))+1}"] = a
 
+def minus(C, R):
+    ws = wb[f"{datetime.now().month}월"]
+    n = ws[f"C{int(datetime.now().strftime('%d'))+1}"].value
+    a = ws[f"E{int(datetime.now().strftime('%d'))+1}"].value
+    if n != None:
+        n += C
+        a = a + ", " + R
+    else:
+        n = C
+        a = R
+    ws[f"C{int(datetime.now().strftime('%d'))+1}"] = n
+    ws[f"E{int(datetime.now().strftime('%d'))+1}"] = a
 
     wb.save(r"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx')
