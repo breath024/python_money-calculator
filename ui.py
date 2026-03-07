@@ -92,13 +92,10 @@ class MainWindow(QMainWindow):
         self.text = self.input_edit.text().strip()
       
         # 입력값이 "숫자/문자열" 형태인지 확인
-        if len(self.text) < 2:
-            response = "입력 형식이 올바르지 않습니다. '숫자/문자열' 형태로 2자 이상 입력해주세요."
-            self.append_log(f"velmora: {response}")
-            return 0
-        elif self.text == "?":
+        if self.text == "?":
             response = "입력 형식: '숫자/문자열' (예: 10000/월급)\n'.' (오늘까지의 내역)"
             self.append_log(f"velmora: {response}")
+
 
         elif self.text==".":
             response = "오늘 까지의 입출금 내역입니다."
@@ -109,8 +106,20 @@ class MainWindow(QMainWindow):
             CMM = ws[f"E{int(datetime.now().strftime('%d'))+1}"].value
             RM = ws[f"F{int(datetime.now().strftime('%d'))+1}"].value
             self.append_log(f"velmora: {response}")
-            self.append_log(f"velmora: 입금액: {CA}\n입금처: {CAA}\n출금액: {CM}\n출금처: {CMM}\n잔액: {RM}")
+            self.append_log(f"velmora: 입금액: {CA}\n\t입금처: {CAA}\n\t출금액: {CM}\n\t출금처: {CMM}\n\t잔액: {RM}")
+
+        elif self.text == ",":
+            response = "잔액은"
+            ws = xl.wb[f"{datetime.now().month}월"]
+            RM = ws[f"F{int(datetime.now().strftime('%d'))+1}"].value
+            self.append_log(f"velmora: {response} {RM}원입니다.")    
         else:
+
+            if len(self.text) < 2:
+                response = "입력 형식이 올바르지 않습니다. '숫자/문자열' 형태로 2자 이상 입력해주세요."
+                self.append_log(f"velmora: {response}")
+                return 0
+
             if self.text.count('/') != 1:
                 response = "입력 형식이 올바르지 않습니다. '숫자/문자열' 형태로 입력해주세요."
                 self.append_log(f"velmora: {response}")
