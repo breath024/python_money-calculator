@@ -9,11 +9,11 @@ minus_style = NamedStyle(name="currency_krw_minus", number_format='₩#,##0;[Red
 dlt = datetime(datetime.now().year, 1, 1)
 print(dlt)
 try:
-    wb = load_workbook(r"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx', data_only=True)
+    wb = load_workbook(r"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx')
 # 파일 없으면 포맷 만들기
 except FileNotFoundError:
     # 파일 생성
-    wb = Workbook(data_only=True)
+    wb = Workbook()
     ws = wb.active
     # 12월까지 시트 만들기
     for l in range(1, 13):
@@ -94,6 +94,7 @@ except FileNotFoundError:
 # 포맷이후 실행할 코드
 
 def add(C, R):
+    wb = load_workbook(r"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx')
     ws = wb[f"{datetime.now().month}월"]
     n = ws[f"B{int(datetime.now().strftime('%d'))+1}"].value
     a = ws[f"D{int(datetime.now().strftime('%d'))+1}"].value
@@ -105,8 +106,10 @@ def add(C, R):
         a = R
     ws[f"B{int(datetime.now().strftime('%d'))+1}"] = n
     ws[f"D{int(datetime.now().strftime('%d'))+1}"] = a
+    wb.save(r"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx')
 
 def minus(C, R):
+    wb = load_workbook(r"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx')
     ws = wb[f"{datetime.now().month}월"]
     n = ws[f"C{int(datetime.now().strftime('%d'))+1}"].value
     a = ws[f"E{int(datetime.now().strftime('%d'))+1}"].value
@@ -118,5 +121,20 @@ def minus(C, R):
         a = R
     ws[f"C{int(datetime.now().strftime('%d'))+1}"] = n
     ws[f"E{int(datetime.now().strftime('%d'))+1}"] = a
-
     wb.save(r"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx')
+
+def rmoney():
+    wb = load_workbook(r"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx', data_only=True)
+    ws = wb[f"{datetime.now().month}월"]
+    RM = ws[f"F{int(datetime.now().strftime('%d'))+1}"].value
+    return RM
+
+def mlog():
+    wb = load_workbook(r"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx', data_only=True)
+    ws = wb[f"{datetime.now().month}월"]
+    A = ws[f"B{int(datetime.now().strftime('%d'))+1}"].value
+    B = ws[f"D{int(datetime.now().strftime('%d'))+1}"].value
+    C = ws[f"C{int(datetime.now().strftime('%d'))+1}"].value
+    D = ws[f"E{int(datetime.now().strftime('%d'))+1}"].value
+    E = ws[f"F{int(datetime.now().strftime('%d'))+1}"].value
+    return (A,B,C,D,E)

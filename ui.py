@@ -99,19 +99,13 @@ class MainWindow(QMainWindow):
 
         elif self.text==".":
             response = "오늘 까지의 입출금 내역입니다."
-            ws = xl.wb[f"{datetime.now().month}월"]
-            CA = ws[f"B{int(datetime.now().strftime('%d'))+1}"].value
-            CAA = ws[f"D{int(datetime.now().strftime('%d'))+1}"].value
-            CM = ws[f"C{int(datetime.now().strftime('%d'))+1}"].value
-            CMM = ws[f"E{int(datetime.now().strftime('%d'))+1}"].value
-            RM = ws[f"F{int(datetime.now().strftime('%d'))+1}"].value
+            CA, CAA, CM, CMM, RM = xl.mlog()
             self.append_log(f"velmora: {response}")
             self.append_log(f"velmora: 입금액: {CA}\n\t입금처: {CAA}\n\t출금액: {CM}\n\t출금처: {CMM}\n\t잔액: {RM}")
 
         elif self.text == ",":
             response = "잔액은"
-            ws = xl.wb[f"{datetime.now().month}월"]
-            RM = ws[f"F{int(datetime.now().strftime('%d'))+1}"].value
+            RM = xl.rmoney
             self.append_log(f"velmora: {response} {RM}원입니다.")    
         else:
 
