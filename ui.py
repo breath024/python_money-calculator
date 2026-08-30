@@ -105,7 +105,8 @@ class MainWindow(QMainWindow):
 
         elif self.text == ",":
             response = "잔액은"
-            RM = xl.rmoney
+            RM = xl.rmoney()
+            print(RM)
             self.append_log(f"velmora: {response} {RM}원입니다.")    
         else:
 

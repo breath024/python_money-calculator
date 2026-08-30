@@ -9,7 +9,7 @@ minus_style = NamedStyle(name="currency_krw_minus", number_format='₩#,##0;[Red
 dlt = datetime(datetime.now().year, 1, 1)
 print(dlt)
 try:
-    wb = load_workbook(r"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx')
+    wb = load_workbook(rf"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx')
 # 파일 없으면 포맷 만들기
 except FileNotFoundError:
     # 파일 생성
@@ -78,7 +78,7 @@ except FileNotFoundError:
     try:
         load_workbook(rf"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_{dty.strftime('%Y')}.xlsx")
         ws = wb[f"1월"]
-        ws[f"F2"] = rf"='C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일" + f"\[입출금내역_{dty.strftime('%Y')}.xlsx]" + "12월'!$F$32"
+        ws[f"F2"] = (rf"='C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\[입출금내역_{dty.strftime('%Y')}.xlsx]" + "12월'!$F$32")
         print (ws[f"F2"].value)
     except FileNotFoundError:
         ws = wb[f"1월"]
@@ -89,12 +89,12 @@ except FileNotFoundError:
                 else:
                     ws[f"F2"] = int(m)
     #절대경로로 파일저장
-    wb.save(r"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx')
+    wb.save(rf"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx')
 
 # 포맷이후 실행할 코드
 
 def add(C, R):
-    wb = load_workbook(r"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx')
+    wb = load_workbook(rf"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx')
     ws = wb[f"{datetime.now().month}월"]
     n = ws[f"B{int(datetime.now().strftime('%d'))+1}"].value
     a = ws[f"D{int(datetime.now().strftime('%d'))+1}"].value
@@ -106,10 +106,10 @@ def add(C, R):
         a = R
     ws[f"B{int(datetime.now().strftime('%d'))+1}"] = n
     ws[f"D{int(datetime.now().strftime('%d'))+1}"] = a
-    wb.save(r"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx')
+    wb.save(rf"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx')
 
 def minus(C, R):
-    wb = load_workbook(r"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx')
+    wb = load_workbook(rf"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx')
     ws = wb[f"{datetime.now().month}월"]
     n = ws[f"C{int(datetime.now().strftime('%d'))+1}"].value
     a = ws[f"E{int(datetime.now().strftime('%d'))+1}"].value
@@ -121,16 +121,17 @@ def minus(C, R):
         a = R
     ws[f"C{int(datetime.now().strftime('%d'))+1}"] = n
     ws[f"E{int(datetime.now().strftime('%d'))+1}"] = a
-    wb.save(r"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx')
+    wb.save(rf"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx')
 
 def rmoney():
-    wb = load_workbook(r"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx', data_only=True)
+    wb = load_workbook(rf"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx', data_only=True)
     ws = wb[f"{datetime.now().month}월"]
     RM = ws[f"F{int(datetime.now().strftime('%d'))+1}"].value
+    print(rf"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx')
     return RM
 
 def mlog():
-    wb = load_workbook(r"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx', data_only=True)
+    wb = load_workbook(rf"C:\Users\USER\Desktop\지출내역서 관리앱\엑셀상세파일\입출금내역_" + datetime.now().strftime('%Y')+'.xlsx', data_only=True)
     ws = wb[f"{datetime.now().month}월"]
     A = ws[f"B{int(datetime.now().strftime('%d'))+1}"].value
     B = ws[f"D{int(datetime.now().strftime('%d'))+1}"].value
